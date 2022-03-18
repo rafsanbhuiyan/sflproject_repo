@@ -1,0 +1,10 @@
+Connect to Azure Server
+
+server = 'rafsanserve.database.windows.net,1433'
+database = 'sfl_database'
+username = 'mysflserver'
+password = 'Mytimy2shine'
+
+
+connection_engine = pyodbc.connect('Driver={SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
+
