@@ -1,34 +1,76 @@
+from unicodedata import name
+from venv import create
 from numpy import disp
 import pyodbc
 import mysql.connector
 import pandas as pd
-from sympy import true
+from sympy import false, true
+from sqlalchemy import create_engine
 
-server = 'rafsanserve.database.windows.net,1433'
+
+#Authentication Variables
+server = 'rafsanserve.database.windows.net'
 database = 'sfl_database'
 username = 'mysflserver'
 password = 'Mytimy2shine'
+driver = 'ODBC Driver 13 for SQL Server'
 
+##############   DATA INGESTION
 
-connection_engine = pyodbc.connect('Driver={SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
+#Initiating PyODBC connection to connect to Azure SQL Database
+#connection_engine = pyodbc.connect('Driver={SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
 
+#Using sqlalchemy and create_engine function to connect to our database for final output dataset
+alchemy_engine = create_engine('mssql+pyodbc://mysflserver:Mytimy2shine@rafsanserve.database.windows.net/dbo')
+
+#Initiaing cursor object using connection_engine
+#This will allow us to execute SQL statement to Insert table to Azure SQL Server Database
+#cursor = connection_engine.cursor()
+
+#Reading data file using Pandas read_csv function
 df = pd.read_csv("C:/Users/Rbhuiyan/Documents/My Resumes/SFL Scientific Interview/DATA.csv")
 
-#Data Transformation
+##############   DATA TRANSFORMATION
 
-#Using the apply function to transform string to lower case
-df["gender"] = df["gender"].apply(str.lower)
+#Using the apply() function to transform string values int to lower case
+
+
+#create function to transfrom string values of a column to lower case
+def col_to_lower(col_name):
+
+    df[col_name] = df[col_name].apply(str.lower)
+
+    return df[col_name]
+
+#Transform all string values of column "gender" to lowercase using the col_to_lower() function
+col_to_lower("gender")
+
+
+
+#Extracting domain name from email using string manipulation
+#split function implementation, n defines the numbers of splits
+#expand = True allows the split string to separate columns
+s1 = df['email'].str.split("@", n=2, expand=True)
+
+#Using Split function with separator '.' to 2 splits
+s2 = s1[1].str.split(".",n=2,expand = True)
+
+#Creating a column for domain name extracted from email using string manipulaion
+df['domain_name'] = s2[0]
+
+#Creating a column for top-level domain from email using string manipulation
+df['toplevel_domain'] =s2[1]
 
 #Reorder columns
-df = df[['id', 'first_name', 'last_name', 'gender', 'email', 'ip_address']]
+df = df[['id', 'first_name', 'last_name', 'gender', 'email', 'ip_address', 'domain_name','toplevel_domain']]
 
-#Extracting Company name using string manipulation
-s1 = df['email'].str.split("@", n=1, expand=True)
 
-s2 = s1[1].str.split(".",n=0,expand = True)
+df.to_sql(con = alchemy_engine, name="sfl_data_table", if_exists='replace', index= False)
 
-df['company'] = s2[0]
-
-print(df.head())
+#close cursor and connection engine
+#cursor.commit()
+#cursor.close()
 
 print(df.info())
+print(df.head())
+
