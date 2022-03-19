@@ -1,18 +1,18 @@
 import pandas as pd
 from sqlalchemy import create_engine
-import textwrap
+
 
 #Authentication Variables
-server = 'rafsanserve.database.windows.net,1433'
-database = 'slf_mysql_database'
-username = 'mysflserver'
+server = '34.133.251.231'
+database = 'slf_database'
+username = 'sqlserver'
 password = 'Mytimy2shine'
-driver = '{ODBC Driver 18 for SQL Server}'
+
 
 
 ##############   DATA INGESTION
 #Using sqlalchemy and create_engine function to connect to our database for final output dataset
-#alchemy_engine = create_engine('mssql+pyodbc://mysflserver:Mytimy2shine@rafsanserve.database.windows.net,1433/sfl_mysql_database?driver=ODBC Driver 18 for SQL Server')
+alchemy_engine = create_engine(f'sql+mysql://{username}:{password}@{server}/{database}')
 
 
 
@@ -54,7 +54,7 @@ df['toplevel_domain'] =s2[1]
 df = df[['id', 'first_name', 'last_name', 'gender', 'email', 'ip_address', 'domain_name','toplevel_domain']]
 
 
-#df.to_sql(con = alchemy_engine, name="sfl_data_table", if_exists='replace', index= False)
+df.to_sql(con = alchemy_engine, name="sfl_data_table", if_exists='replace', index= False)
 
 #close cursor and connection engine
 #cursor.commit()
