@@ -47,16 +47,12 @@ df['toplevel_domain'] =s2[1]
 #Reorder columns
 df = df[['id', 'first_name', 'last_name', 'gender', 'email', 'ip_address', 'domain_name','toplevel_domain']]
 
-
+#Loading dataframe in to SQL database 'sfl_data_schema'
 df.to_sql(con = alchemy_engine, name="sfl_data_table", if_exists='replace', index= False)
 
-#close cursor and connection engine
-#cursor.commit()
-#cursor.close()
-
-print(df.info())
+#Printing data
 print(df.head())
 
-############# Testing MySQL Database
+# Testing MySQL Database
 data = pd.read_sql("""SELECT * FROM sfl_data_table""", alchemy_engine)
 print(data.info())
