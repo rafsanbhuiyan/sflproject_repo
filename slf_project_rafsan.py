@@ -1,27 +1,20 @@
 import pandas as pd
-import pyodbc
 from sqlalchemy import create_engine
-
+import textwrap
 
 #Authentication Variables
-server_url = 'rafsanserve.database.windows.net,1433'
-database = 'sfl_database'
+server = 'rafsanserve.database.windows.net,1433'
+database = 'slf_mysql_database'
 username = 'mysflserver'
 password = 'Mytimy2shine'
-driver = '{ODBC Driver 17 for SQL Server}'
+driver = '{ODBC Driver 18 for SQL Server}'
 
 
 ##############   DATA INGESTION
-
-#Initiating PyODBC connection to connect to Azure SQL Database
-#connection_engine = pyodbc.connect('Driver={SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
-
 #Using sqlalchemy and create_engine function to connect to our database for final output dataset
-alchemy_engine = create_engine('mssql+pyodbc://mysflserver:Mytimy2shine@rafsanserve.database.windows.net/sfl_database?odbc_connect='+driver)
+#alchemy_engine = create_engine('mssql+pyodbc://mysflserver:Mytimy2shine@rafsanserve.database.windows.net,1433/sfl_mysql_database?driver=ODBC Driver 18 for SQL Server')
 
-#Initiaing cursor object using connection_engine
-#This will allow us to execute SQL statement to Insert table to Azure SQL Server Database
-#cursor = connection_engine.cursor()
+
 
 #Reading data file using Pandas read_csv function
 df = pd.read_csv("/Users/rafsanbhuiyan/Documents/GitHub/sflproject_repo/DATA.csv")

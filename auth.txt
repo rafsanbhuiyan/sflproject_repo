@@ -8,3 +8,9 @@ password = 'Mytimy2shine'
 
 connection_engine = pyodbc.connect('Driver={SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
 
+
+Connect to MySQL Azure Server
+Server name: sflmysqlserver
+
+admin username: sfl_mysql
+password: Mytimy2shine
