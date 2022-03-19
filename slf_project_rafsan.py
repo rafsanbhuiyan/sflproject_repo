@@ -8,28 +8,20 @@ database = 'sfl_data_schema'
 username = 'sfl_admin'
 password = 'passw'
 
-
-
 #DATA INGESTION
 
 #Using sqlalchemy and create_engine function to connect to our database for final output dataset
-alchemy_engine = create_engine("mysql+pymysql://sfl_admin:passw@34.67.24.169/sfl_data_schema")
-
-#cnx = mysql.connector.connect(user='root', pass`)
-
-print(alchemy_engine)
+alchemy_engine = create_engine(f"mysql+pymysql://{username}:{password}@{server}/{database}")
 
 #Reading data file using Pandas read_csv function
 df = pd.read_csv("/Users/rafsanbhuiyan/Documents/GitHub/sflproject_repo/DATA.csv")
 
-##############   DATA TRANSFORMATION
-
-#Using the apply() function to transform string values int to lower case
-
+#DATA TRANSFORMATION
 
 #create function to transfrom string values of a column to lower case
 def col_to_lower(col_name):
 
+    # Using the apply() function to transform string values int to lower case
     df[col_name] = df[col_name].apply(str.lower)
 
     return df[col_name]
@@ -38,6 +30,7 @@ def col_to_lower(col_name):
 col_to_lower("gender")
 
 #Extracting domain name from email using string manipulation
+
 #split function implementation, n defines the numbers of splits
 #expand = True allows the split string to separate columns
 s1 = df['email'].str.split("@", n=2, expand=True)
@@ -62,7 +55,7 @@ df.to_sql(con = alchemy_engine, name="sfl_data_table", if_exists='replace', inde
 #cursor.close()
 
 print(df.info())
-#print(df.head())
+print(df.head())
 
 ############# Testing MySQL Database
 data = pd.read_sql("""SELECT * FROM sfl_data_table""", alchemy_engine)
