@@ -1,6 +1,5 @@
 import pandas as pd
 from sqlalchemy import create_engine
-import pymysql
 
 #Authentication Variables
 server = '34.67.24.169'
