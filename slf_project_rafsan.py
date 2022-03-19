@@ -1,19 +1,15 @@
-from unicodedata import name
-from venv import create
-from numpy import disp
-import pyodbc
-import mysql.connector
 import pandas as pd
-from sympy import false, true
+import pyodbc
 from sqlalchemy import create_engine
 
 
 #Authentication Variables
-server = 'rafsanserve.database.windows.net'
+server_url = 'rafsanserve.database.windows.net,1433'
 database = 'sfl_database'
 username = 'mysflserver'
 password = 'Mytimy2shine'
-driver = 'ODBC Driver 13 for SQL Server'
+driver = '{ODBC Driver 17 for SQL Server}'
+
 
 ##############   DATA INGESTION
 
@@ -21,14 +17,14 @@ driver = 'ODBC Driver 13 for SQL Server'
 #connection_engine = pyodbc.connect('Driver={SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
 
 #Using sqlalchemy and create_engine function to connect to our database for final output dataset
-alchemy_engine = create_engine('mssql+pyodbc://mysflserver:Mytimy2shine@rafsanserve.database.windows.net/dbo')
+alchemy_engine = create_engine('mssql+pyodbc://mysflserver:Mytimy2shine@rafsanserve.database.windows.net/sfl_database?odbc_connect='+driver)
 
 #Initiaing cursor object using connection_engine
 #This will allow us to execute SQL statement to Insert table to Azure SQL Server Database
 #cursor = connection_engine.cursor()
 
 #Reading data file using Pandas read_csv function
-df = pd.read_csv("C:/Users/Rbhuiyan/Documents/My Resumes/SFL Scientific Interview/DATA.csv")
+df = pd.read_csv("/Users/rafsanbhuiyan/Documents/GitHub/sflproject_repo/DATA.csv")
 
 ##############   DATA TRANSFORMATION
 
@@ -65,7 +61,7 @@ df['toplevel_domain'] =s2[1]
 df = df[['id', 'first_name', 'last_name', 'gender', 'email', 'ip_address', 'domain_name','toplevel_domain']]
 
 
-df.to_sql(con = alchemy_engine, name="sfl_data_table", if_exists='replace', index= False)
+#df.to_sql(con = alchemy_engine, name="sfl_data_table", if_exists='replace', index= False)
 
 #close cursor and connection engine
 #cursor.commit()
